@@ -12,7 +12,13 @@ const getPostData = (req, res) => {
         if(req.method === 'GET') {
             reslove({});
         } else if(req.method === 'POST') {
-
+            let postData = '';
+            req.on('data', (data) => {
+                postData += data;
+            });
+            req.on('end', () => {
+                reslove(postData);
+            });
         }
     });
     return promise;
