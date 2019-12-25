@@ -9,16 +9,20 @@ const PORT = 3000;
 
 const getPostData = (req, res) => {
     const promise = new Promise((reslove, reject) => {
-        if(req.method === 'GET') {
+        try {
+            if(req.method === 'GET') {
+                reslove({});
+            } else if(req.method === 'POST') {
+                let postData = '';
+                req.on('data', (data) => {
+                    postData += data;
+                });
+                req.on('end', () => {
+                    reslove(JSON.parse(postData));
+                });
+            }
+        } catch(err) {
             reslove({});
-        } else if(req.method === 'POST') {
-            let postData = '';
-            req.on('data', (data) => {
-                postData += data;
-            });
-            req.on('end', () => {
-                reslove(postData);
-            });
         }
     });
     return promise;
@@ -37,7 +41,7 @@ const createServerHandler = (req, res) => {
         'Content-type':'application/json'
     });
 
-    getPostData().then((postData) => {
+    getPostData(req, res).then((postData) => {
         req.body = postData;
         const blogData = blogRouter(req, res);
         if(blogData) {
@@ -61,3 +65,11 @@ const app = http.createServer(createServerHandler);
 app.listen(PORT, () => {
     console.log(`server is starting in ${PORT}...`);
 });
+
+/**
+ * 跨域解决
+ * res.header("Access-Control-Allow-Origin", '*');
+ * res.header("Access-Control-Allow-Headers", "Content-Type");
+ * res.header("Access-Control-Allow-Methods","*");//允许访问的方式
+ * res.header("Content-Type", "application/json;charset=utf-8");
+ */

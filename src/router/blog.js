@@ -1,8 +1,10 @@
 const { getBlogList } = require('../controller/blog');
+const { SuccessModel, FailModel } = require('../model/model');
 
 function blogRouter(req, res) {
     if(req.method === 'GET' && req.path === '/api/blog/list') {
-        return getBlogList(req, res);
+        const list = getBlogList(req, res);
+        return new SuccessModel(list);
     }
 }
 
