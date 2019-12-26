@@ -1,16 +1,27 @@
 const mySql = require('mysql');
+const dbConfig = require('../db/dbConfig');
 
-const con = mySql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '123',
-    database: 'blog',
-});
+/**
+ * 
+ * 每次都会重新链接db
+ */
+const exec = (sql) => {
+    const con = mySql.createConnection(dbConfig);
+    con.connect();
+    return new Promise((reslove, reject) => {
+        con.query(sql, (err, result) => {
+            if(err) {
+                console.log(err);
+                reject();
+                return;
+            }
+            reslove(result);
+        })
+        con.end();
+    });
 
-con.connect();
+}
 
-con.query(`select * from users;`, (err, result) => {
-    console.log(result[0]);
-})
-
-con.end();
+module.exports = {
+    exec
+};

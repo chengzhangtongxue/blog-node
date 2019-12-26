@@ -4,6 +4,7 @@ const http = require('http');
 const querystring = require('querystring');
 const blogRouter = require('./src/router/blog');
 const userRouter = require('./src/router/user');
+const ejs = require('ejs');
 
 const PORT = 3000;
 
@@ -34,6 +35,26 @@ const createServerHandler = (req, res) => {
     req.query = querystring.parse(url[1]);
     req.path = url[0];
 
+    if(req.path === '/') {
+        ejs.renderFile('./ejs/index.ejs',{
+            arr: [
+                {title: '标题1', content: '内容1'},
+                {title: '标题2', content: '内容2'},
+                {title: '标题3', content: '内容3'},
+            ]
+        },(err,data) => {
+            if(err) {
+                console.log(err, '编译失败');
+                return;
+            }
+            res.writeHeader(200, {
+                'Content-type':'text/html;chartset=utf-8'
+            });
+            res.end(data);
+        })
+        return;
+    }
+
     /**
      * 设置返回数据类型为 application/json 类型 返回状态码为 200
      */
@@ -43,21 +64,21 @@ const createServerHandler = (req, res) => {
 
     getPostData(req, res).then((postData) => {
         req.body = postData;
-        const blogData = blogRouter(req, res);
-        if(blogData) {
-            res.end(JSON.stringify(blogData));
+        const resultBlog = blogRouter(req, res);
+        resultBlog.then(data => {
+            res.end(JSON.stringify(data));
             return;
-        }
-        const userData = userRouter(req, res);
-        if(userData) {
-            res.end(JSON.stringify(userData));
-            return;
-        }
+        })
+        // const userData = userRouter(req, res);
+        // if(userData) {
+        //     res.end(JSON.stringify(userData));
+        //     return;
+        // }
     
-        res.writeHeader(404, {
-            'Content-type':'text/html;charset=utf-8'
-        });
-        res.end(`404 您访问的页面不存在`);
+        // res.writeHeader(404, {
+        //     'Content-type':'text/html;charset=utf-8'
+        // });
+        // res.end(`404 您访问的页面不存在`);
     })
 }
 

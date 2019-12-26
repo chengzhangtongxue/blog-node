@@ -7,7 +7,9 @@
     2. cross-env 跨平台地设置及使用环境变量
     npm install --save-dev cross-env
     说明: 
-    当您使用NODE_ENV =production, 来设置环境变量时，大多数Windows命令提示将会阻塞(报错)。 （异常是Windows上的Bash，它使用本机Bash。）同样，Windows和POSIX命令如何使用环境变量也有区别。 使用POSIX，您可以使用：$ ENV_VAR和使用％ENV_VAR％的Windows。 
+    当您使用NODE_ENV =production, 来设置环境变量时，大多数Windows命令提示将会阻塞(报错)。 
+    （异常是Windows上的Bash，它使用本机Bash。）同样，Windows和POSIX命令如何使用环境变量也有区别。 
+    使用POSIX，您可以使用：$ ENV_VAR和使用％ENV_VAR％的Windows。 
     说人话：windows不支持NODE_ENV=development的设置方式。会报错
 
     3. mysql 最流行的关系型数据库管理系统
@@ -27,5 +29,5 @@
     进入mysql数据库(可以 mysqlworkbench 进入，也可以命令行进入执行下面的语句)
     更改加密方式
     ALTER USER 'root'@'localhost' IDENTIFIED BY 'password' PASSWORD EXPIRE NEVER;
-    更改免密： 如修改为 123
+    更改密码： 如修改为 123
     ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123';
